@@ -49,7 +49,11 @@ class BaseLogger
 
         $logger->pushProcessor(function ($record) {
             $record['context'] = $this->hideSensitiveData($record['context']);
-            call_user_func(self::$callbackInvoke, $record);
+
+            if (self::$callbackInvoke) {
+                call_user_func(self::$callbackInvoke, $record);
+            }
+
             return $record;
         });
     }
