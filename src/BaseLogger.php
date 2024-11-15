@@ -3,7 +3,7 @@
 namespace Viethqb\LaravelLoggingSensitive;
 
 use Illuminate\Support\Str;
-use Viethqb\LaravelLoggingSensitive\Contract\LoggerInterface;
+use Viethqb\LaravelLoggingSensitive\Contracts\LoggerInterface;
 
 class BaseLogger implements LoggerInterface
 {
