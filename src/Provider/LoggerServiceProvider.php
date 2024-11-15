@@ -6,7 +6,7 @@
 
 namespace Viethqb\LaravelLoggingSensitive\Providers;
 
-use Carbon\Laravel\ServiceProvider;
+use Illuminate\Support\ServiceProvider;
 use Viethqb\LaravelLoggingSensitive\BaseLogger;
 use Viethqb\LaravelLoggingSensitive\Contract\LoggerInterface;
 
