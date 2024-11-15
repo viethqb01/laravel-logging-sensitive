@@ -8,7 +8,7 @@ namespace Viethqb\LaravelLoggingSensitive\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Viethqb\LaravelLoggingSensitive\BaseLogger;
-use Viethqb\LaravelLoggingSensitive\Contract\LoggerInterface;
+use Viethqb\LaravelLoggingSensitive\Contracts\LoggerInterface;
 
 class LoggerServiceProvider extends ServiceProvider
 {

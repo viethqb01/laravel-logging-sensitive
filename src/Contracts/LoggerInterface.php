@@ -1,6 +1,6 @@
 <?php
 
-namespace Viethqb\LaravelLoggingSensitive\Contract;
+namespace Viethqb\LaravelLoggingSensitive\Contracts;
 
 interface LoggerInterface
 {
