@@ -27,6 +27,6 @@ class LoggerServiceProvider extends ServiceProvider
     {
         // Publish Logger
         $servicePath = __DIR__ . '/../Publish/Logger.php';
-        $this->publishes([$servicePath => app_path('Base/Logger.php')], 'base');
+        $this->publishes([$servicePath => app_path('Log/Logger.php')], 'log');
     }
 }
