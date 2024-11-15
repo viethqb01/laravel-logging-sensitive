@@ -3,9 +3,10 @@
 namespace Viethqb\LaravelLoggingSensitive;
 
 use Illuminate\Support\Str;
+use Monolog\Processor\ProcessorInterface;
 use Viethqb\LaravelLoggingSensitive\Contracts\LoggerInterface;
 
-class BaseLogger implements LoggerInterface
+class BaseLogger implements LoggerInterface, ProcessorInterface
 {
     public const SENSITIVE_WORDS = [
         "api_key",
