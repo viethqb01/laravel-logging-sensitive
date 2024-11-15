@@ -66,5 +66,5 @@ Log::info('Log', ['api_key' => 'SB8WHshk5WWAbIlPVZBvzCJTJCsahpq87q', 'password' 
 + output Log
 
 ```shell
-[2024-11-15 08:56:09] local.INFO: [Log ID: JFFAo42mzFzjUDaV] This is a test log {"api_key":"******", "password":"******"}
+[2024-11-15 08:56:09] local.INFO: [Log ID: JFFAo42mzFzjUDaV] Log {"api_key":"******", "password":"******"}
  ```
