@@ -3,12 +3,11 @@
 namespace Viethqb\LaravelLoggingSensitive;
 
 use Illuminate\Support\Str;
-use Monolog\Processor\ProcessorInterface;
-use Viethqb\LaravelLoggingSensitive\Contracts\LoggerInterface;
+use Monolog\Formatter\LineFormatter;
 
-class BaseLogger implements LoggerInterface, ProcessorInterface
+class BaseLogger
 {
-    public const SENSITIVE_WORDS = [
+    public const SENSITIVE_KEYS = [
         "api_key",
         "api key",
         'apikey',
@@ -16,46 +15,40 @@ class BaseLogger implements LoggerInterface, ProcessorInterface
         'secret key',
         'secretKey',
         'user name',
+        'user_name',
         'userName',
         "password",
     ];
 
-    public static string $logId;
+    private static string $logId;
 
-    /**
-     * Boot method to initialize log ID (UUID).
-     *
-     * @return string
-     */
     public static function boot(): string
     {
-        self::$logId = (string) Str::uuid();
+        self::$logId = Str::random();
         return self::$logId;
     }
 
     /**
-     * Get the current log ID (UUID).
+     * @Author apple
+     * @Date Nov 15, 2024
      *
-     * @return string
+     * @param $logger
      */
-    public static function getLogId(): string
+    public function __invoke($logger): void
     {
-        return self::$logId;
-    }
+        $logId = self::$logId;
 
-    /**
-     * Mask sensitive data in logs and add UUID to context.
-     *
-     * @param array $record
-     * @return array
-     */
-    public function __invoke(array $record): array
-    {
-        $record['context'] = $this->hideSensitiveData($record['context']);
-        $record['context']['request_uuid'] = self::getLogId();
+        foreach ($logger->getHandlers() as $handler) {
+            $handler->setFormatter(new LineFormatter(
+                "[%datetime%] %channel%.%level_name%: [Log ID: $logId] %message% %context%\n",
+                "Y-m-d H:i:s"
+            ));
+        }
 
-        $this->postInvoke($record);
-        return $record;
+        $logger->pushProcessor(function ($record) {
+            $record['context'] = $this->hideSensitiveData($record['context']);
+            return $record;
+        });
     }
 
     /**
@@ -84,25 +77,12 @@ class BaseLogger implements LoggerInterface, ProcessorInterface
      */
     public function checkKeyIsSensitive($key): bool
     {
-        foreach (self::SENSITIVE_WORDS as $sensitiveWord) {
+        foreach (self::SENSITIVE_KEYS as $sensitiveWord) {
             if (str_contains(strtolower($key), $sensitiveWord)) {
                 return true;
             }
         }
         return false;
     }
-
-    /**
-     * @Author apple
-     * @Date Nov 15, 2024
-     * Note: Custom xử lý sau khi invoke
-     *        + get push error to telegram, sentry ...vv
-     *        + level_name = $record['level_name']
-     *        + value của level_name (DEBUG, INFO, NOTICE, WARNING, ERROR, CRITICAL, ALERT, EMERGENCY)
-     * @param array $record
-     */
-    public function postInvoke(array $record)
-    {
-
-    }
 }
+
