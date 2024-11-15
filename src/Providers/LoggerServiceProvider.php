@@ -19,14 +19,6 @@ class LoggerServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->publishBaseClasses();
         BaseLogger::boot();
-    }
-
-    public function publishBaseClasses(): void
-    {
-        // Publish Logger
-        $servicePath = __DIR__ . '/../Publish/Logger.php';
-        $this->publishes([$servicePath => app_path('Log/Logger.php')], 'log');
     }
 }

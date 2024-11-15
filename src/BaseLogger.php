@@ -7,7 +7,7 @@ use Monolog\Formatter\LineFormatter;
 
 class BaseLogger
 {
-    public const SENSITIVE_KEYS = [
+    public static array $sensitiveKeys = [
         "api_key",
         "api key",
         'apikey',
@@ -49,6 +49,10 @@ class BaseLogger
             $record['context'] = $this->hideSensitiveData($record['context']);
             return $record;
         });
+
+        $logger->listen(function ($eventMessageLogger) use ($logId) {
+            $this->postInvoke($eventMessageLogger);
+        });
     }
 
     /**
@@ -77,12 +81,33 @@ class BaseLogger
      */
     public function checkKeyIsSensitive($key): bool
     {
-        foreach (self::SENSITIVE_KEYS as $sensitiveWord) {
+        foreach (self::$sensitiveKeys as $sensitiveWord) {
             if (str_contains(strtolower($key), $sensitiveWord)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Set custom sensitive keys.
+     *
+     * @param array $keys
+     */
+    public static function setSensitiveKeys(array $keys): void
+    {
+        self::$sensitiveKeys = $keys;
+    }
+
+    /**
+     * @Author apple
+     * @Date Nov 15, 2024
+     *  Value event level = [debug, info, notice, warning, error, critical, alert, emergency]
+     * @param $eventMessageLogger
+     */
+    public function postInvoke($eventMessageLogger): void
+    {
+        // TODO POST INVOKE HERE
     }
 }
 
