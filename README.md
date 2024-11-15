@@ -1,7 +1,7 @@
 # Laravel Logger
 
 This base code logger custom in laravel
-+ Hide data sensitive 
++ Hide data sensitive
 + Add request ID to serve the request flow
 
 ## Install
@@ -28,30 +28,43 @@ composer require viethqb/laravel-logging-sensitive
 Viethqb\LaravelLoggingSensitive\Providers\LoggerServiceProvider::class
 ```
 
-## Publish configuration file and Base Classes
-
+## Config key hide sensitive
++ Default 
 ```shell
-php artisan vendor:publish --provider="Viethqb\LaravelLoggingSensitive\Providers\LoggerServiceProvider"
+$sensitiveKeys = [
+    "api_key",
+    "api key",
+    'apikey',
+    'secret_key',
+    'secret key',
+    'secretKey',
+    'user name',
+    'user_name',
+    'userName',
+    "password",
+] 
+```
++ Config custom key hide in method boot AppServiceProvider
+```shell
+ BaseLogger::setSensitiveKeys([""]);
+```
+
++ Config custom function listen log boot AppServiceProvider
+```shell
+BaseLogger::setCallbackInvoke(function ($record) {
+    // Todo custom function callback post invoke log  
+});
 ```
 
 ## Demo request result 
 + input
 
 ```shell
-{
-    "user_id": 1
-    "user_name": "viethqb"
-    "password": "1234567@"
-}
+Log::info('Log', ['api_key' => 'SB8WHshk5WWAbIlPVZBvzCJTJCsahpq87q', 'password' => "123456"]);
  ```
 
-+ output
++ output Log
 
 ```shell
-{
-    "request_uuid": "123e4567-e89b-12d3-a456-426614174000",
-    "user_id": 1
-    "user_name": "*****"
-    "password": "******"
-}
+[2024-11-15 08:56:09] local.INFO: [Log ID: JFFAo42mzFzjUDaV] This is a test log {"api_key":"******", "password":"******"}
  ```

@@ -2,6 +2,7 @@
 
 namespace Viethqb\LaravelLoggingSensitive;
 
+use Closure;
 use Illuminate\Support\Str;
 use Monolog\Formatter\LineFormatter;
 
@@ -21,6 +22,7 @@ class BaseLogger
     ];
 
     private static string $logId;
+    private static ?\Closure $callbackInvoke = null;
 
     public static function boot(): string
     {
@@ -29,7 +31,7 @@ class BaseLogger
     }
 
     /**
-     * @Author apple
+     * @Author viethqb
      * @Date Nov 15, 2024
      *
      * @param $logger
@@ -47,16 +49,14 @@ class BaseLogger
 
         $logger->pushProcessor(function ($record) {
             $record['context'] = $this->hideSensitiveData($record['context']);
+            call_user_func(self::$callbackInvoke, $record);
             return $record;
-        });
-
-        $logger->listen(function ($eventMessageLogger) use ($logId) {
-            $this->postInvoke($eventMessageLogger);
         });
     }
 
     /**
-     * Recursively masks sensitive data in an array.
+     * @Author viethqb
+     * @Date Nov 15, 2024
      *
      * @param array $data
      * @return array
@@ -74,7 +74,8 @@ class BaseLogger
     }
 
     /**
-     * Check if a key is sensitive.
+     * @Author viethqb
+     * @Date Nov 15, 2024
      *
      * @param $key
      * @return bool
@@ -90,7 +91,8 @@ class BaseLogger
     }
 
     /**
-     * Set custom sensitive keys.
+     * @Author viethqb
+     * @Date Nov 15, 2024
      *
      * @param array $keys
      */
@@ -100,14 +102,14 @@ class BaseLogger
     }
 
     /**
-     * @Author apple
+     * @Author viethqb
      * @Date Nov 15, 2024
-     *  Value event level = [debug, info, notice, warning, error, critical, alert, emergency]
-     * @param $eventMessageLogger
+     *
+     * @param Closure $callback
      */
-    public function postInvoke($eventMessageLogger): void
+    public static function setCallbackInvoke(Closure $callback): void
     {
-        // TODO POST INVOKE HERE
+        self::$callbackInvoke = $callback;
     }
 }
 
